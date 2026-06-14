@@ -1,1 +1,70 @@
-/* Caso queira utilizar framework como Bootstrap para estilização, pode utilizar. Basta ignoar esse arquivo */
+/* Adicionando :root para ajudar na estilização... */
+:root,
+[data-theme="light"] {
+  --bg: #f1f5f4;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --border: #e2e8e6;
+  --border-soft: #eaf0ee;
+
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3a8;
+
+  --accent: #0f9d83;
+  --accent-soft: rgba(15, 157, 131, 0.08);
+  --accent-strong: #0c7e69;
+  --accent-on-fill: #ffffff;
+
+  --warning: #d97706;
+  --warning-soft: rgba(217, 119, 6, 0.08);
+
+  --danger: #e11d48;
+  --danger-soft: rgba(225, 29, 72, 0.08);
+
+  --shadow-card: 0 1px 2px rgba(30, 41, 59, 0.04), 0 4px 16px rgba(30, 41, 59, 0.04);
+}
+
+[data-theme="dark"] {
+  --bg: #0b1120;
+  --bg-elevated: #111827;
+  --bg-card: #161e2e;
+  --border: #1f2937;
+  --border-soft: #1a2333;
+
+  --text-primary: #e5e9f0;
+  --text-secondary: #8b96a8;
+  --text-muted: #5b6678;
+
+  --accent: #10b981;
+  --accent-soft: rgba(16, 185, 129, 0.12);
+  --accent-strong: #34d399;
+  --accent-on-fill: #06281f;
+
+  --warning: #f59e0b;
+  --warning-soft: rgba(245, 158, 11, 0.12);
+
+  --danger: #f43f5e;
+  --danger-soft: rgba(244, 63, 94, 0.12);
+
+  --shadow-card: none;
+}
+
+[data-theme="dark"] .feedback.erro {
+  color: #fb7185;
+}
+
+[data-theme="dark"] .badge-critico {
+  color: #fb7185;
+}
+
+:root {
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --transition-theme: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
