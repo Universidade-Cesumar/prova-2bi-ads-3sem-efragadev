@@ -535,3 +535,46 @@ body {
 }
 
 /* Table */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-soft);
+    transition: var(--transition-theme);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+}
+
+thead{
+    background: var(--bg);
+    transition: var(--transition-theme);
+}
+
+th {
+    text-align: left;
+    padding: 11px 16px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-family: var(--font-mono);
+}
+
+td {
+    padding: 13px 16px;
+    border-top: 1px solid var(--border-soft);
+}
+
+tbody tr {
+    position: relative;
+    transition: background 0.15s;
+}
+
+tbody tr:hover{
+    background: var(--bg);
+}
+
