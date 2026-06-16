@@ -578,3 +578,59 @@ tbody tr:hover{
     background: var(--bg);
 }
 
+/* Status accent bar */
+.linha-status {
+    border-left: 3px solid transparent;
+}
+
+.linha-status.status-ok{
+    border-left-color: var(--accent);
+}
+
+.linha-status.status-baixo {
+    border-left-color: var(--warning);
+}
+
+.linha-status.status-critico {
+    border-left-color: var(--danger);
+}
+
+.celula-nome {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.celula-quantidade {
+    font-family: var(--font-mono);
+}
+
+.qtd-badge{
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    transition: var(--transition-theme);
+}
+
+.badge-ok {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+}
+
+.badge-baixo {
+    background: var(--warning-soft);
+    color: var(--warning);
+}
+
+.badge-critico{
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+.celula-status-texto {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/*  */
