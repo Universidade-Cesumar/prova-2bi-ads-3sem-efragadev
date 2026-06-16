@@ -116,6 +116,7 @@
                   <th>Material</th>
                   <th>Qtd.</th>
                   <th>Status</th>
+                  <th class="th-acoes">Ações</th>
                 </tr>
               </thead>
               <tbody id="lista-materiais">
@@ -140,6 +141,17 @@
     </main>
   </div>
 
-  <script src="main.js"></script>
+  <div id="modal-confirmacao" class="modal-overlay" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <h3 id="modal-titulo">Excluir material?</h3>
+    <p id="modal-texto">Tem certeza que deseja excluir <strong id="modal-nome-item"></strong> do inventário? Esta ação não pode ser desfeita.</p>
+    <div class="modal-acoes">
+      <button id="modal-cancelar" class="btn-secundario">Cancelar</button>
+      <button id="modal-confirmar" class="btn-perigo">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
