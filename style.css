@@ -633,4 +633,49 @@ tbody tr:hover{
     font-size: 0.8rem;
 }
 
-/*  */
+/* EMPTY - LOADING */
+.estado-vazio,
+.estado-carregando {
+    text-align: center;
+    padding: 40px 16px;
+    color: var(--text-muted);
+}
+
+.estado-vazio-sub {
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+.spinner{
+    width: 26px;
+    height: 26px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar{
+    to {transform: rotate(360deg);}
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 2s;
+    }
+    body,
+    .sidebar,
+    .panel,
+    .kpi-card,
+    .btn-ghost,
+    .theme-toggle,
+    .form-group input,
+    .feedback,
+    .qtd-badge,
+    .table-wrapper,
+    thead,
+    .brand-mark {
+        transition: none;
+    }
+}
