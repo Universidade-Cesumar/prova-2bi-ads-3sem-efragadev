@@ -1,157 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Almoxarifado | SENAC Zona Norte</title>
-    <link rel="icon"  type="image/png" href="img/diamante.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com"> 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <div class="app-shell">
-
-    <aside class="sidebar">
-      <div class="sidebar-brand">
-        <span class="brand-mark">SN</span>
-        <div class="brand-text">
-          <strong>Almoxarifado</strong>
-          <span>Enfermagem · Zona Norte</span>
-        </div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item nav-item-active">
-          <span class="nav-dot"></span> Inventário
-        </a>
-      </nav>
-
-      <div class="sidebar-footer">
-        <button id="btn-tema" class="theme-toggle" title="Alternar tema" aria-label="Alternar entre modo claro e escuro">
-          <span class="theme-icon theme-icon-sun">☀</span>
-          <span class="theme-icon theme-icon-moon">☾</span>
-          <span class="theme-toggle-label">Modo escuro</span>
-        </button>
-        <div class="sidebar-meta">
-          <span class="footer-eyebrow">Sprint 01</span>
-          <span class="footer-label">EFRAGADEV.</span>
-        </div>
-      </div>
-    </aside>
-
-    <main class="main-panel">
-
-      <header class="topbar">
-        <div>
-          <p class="topbar-eyebrow">Painel de controle</p>
-          <h1>Inventário do Almoxarifado</h1>
-        </div>
-        <button id="btn-atualizar" class="btn-ghost" title="Atualizar lista">
-          <span class="icon-refresh">⟳</span> Atualizar
-        </button>
-      </header>
-
-      <section class="kpi-row">
-        <div class="kpi-card">
-          <span class="kpi-label">Itens cadastrados</span>
-          <span id="total-itens" class="kpi-value">—</span>
-        </div>
-        <div class="kpi-card kpi-card-alert">
-          <span class="kpi-label">Em alerta de estoque</span>
-          <span id="total-alerta" class="kpi-value">—</span>
-        </div>
-      </section>
-
-      <div class="content-grid">
-
-        <section class="panel form-panel">
-          <h2>Novo material</h2>
-          <p class="panel-description">Adicione um item ao estoque do almoxarifado.</p>
-
-          <form id="form-cadastro">
-            <div class="form-group">
-              <label for="input-nome">Nome do material</label>
-              <input
-                type="text"
-                id="input-nome"
-                name="nome"
-                placeholder="Luvas de procedimento"
-                required
-              >
-            </div>
-
-            <div class="form-group">
-              <label for="input-quantidade">Quantidade em estoque</label>
-              <input
-                type="number"
-                id="input-quantidade"
-                name="quantidade"
-                placeholder="0"
-                min="0"
-                required
-              >
-            </div>
-
-            <button type="submit" id="btn-cadastrar">
-              <span class="btn-icon">+</span> Cadastrar material
-            </button>
-          </form>
-
-          <div id="feedback-msg" class="feedback" hidden></div>
-        </section>
-
-        <section class="panel list-panel">
-          <div class="panel-header">
-            <h2>Itens em estoque</h2>
-            <p class="panel-description">Estoque atualizado em tempo real.</p>
+    <link rel="icon" type="image/png" href="img/diamante.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand-mark">SN</span>
+          <div class="brand-text">
+            <strong>Almoxarifado</strong>
+            <span>Enfermagem · Zona Norte</span>
           </div>
+        </div>
 
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Material</th>
-                  <th>Qtd.</th>
-                  <th>Status</th>
-                  <th class="th-acoes">Ações</th>
-                </tr>
-              </thead>
-              <tbody id="lista-materiais">
-                <!-- Preenchido dinamicamente via JS -->
-              </tbody>
-            </table>
+        <nav class="sidebar-nav">
+          <a href="#" class="nav-item nav-item-active">
+            <span class="nav-dot"></span> Inventário
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button
+            id="btn-tema"
+            class="theme-toggle"
+            title="Alternar tema"
+            aria-label="Alternar entre modo claro e escuro"
+          >
+            <span class="theme-icon theme-icon-sun">☀</span>
+            <span class="theme-icon theme-icon-moon">☾</span>
+            <span class="theme-toggle-label">Modo escuro</span>
+          </button>
+          <div class="sidebar-meta">
+            <span class="footer-eyebrow">Sprint 01</span>
+            <span class="footer-label">EFRAGADEV.</span>
           </div>
+        </div>
+      </aside>
 
-          <div id="estado-vazio" class="estado-vazio" hidden>
-            <p>Nenhum material cadastrado ainda.</p>
-            <p class="estado-vazio-sub">Use o formulário ao lado para começar.</p>
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="topbar-eyebrow">Painel de controle</p>
+            <h1>Inventário do Almoxarifado</h1>
           </div>
+          <button id="btn-atualizar" class="btn-ghost" title="Atualizar lista">
+            <span class="icon-refresh">⟳</span> Atualizar
+          </button>
+        </header>
 
-          <div id="estado-carregando" class="estado-carregando">
-            <div class="spinner"></div>
-            <p>Carregando inventário...</p>
+        <section class="kpi-row">
+          <div class="kpi-card">
+            <span class="kpi-label">Itens cadastrados</span>
+            <span id="total-itens" class="kpi-value">—</span>
+          </div>
+          <div class="kpi-card kpi-card-alert">
+            <span class="kpi-label">Em alerta de estoque</span>
+            <span id="total-alerta" class="kpi-value">—</span>
           </div>
         </section>
 
-      </div>
+        <div class="content-grid">
+          <section class="panel form-panel">
+            <h2>Novo material</h2>
+            <p class="panel-description">
+              Adicione um item ao estoque do almoxarifado.
+            </p>
 
-    </main>
-  </div>
+            <form id="form-cadastro">
+              <div class="form-group">
+                <label for="input-nome">Nome do material</label>
+                <input
+                  type="text"
+                  id="input-nome"
+                  name="nome"
+                  placeholder="Luvas de procedimento"
+                  required
+                />
+              </div>
 
-  <div id="modal-confirmacao" class="modal-overlay" hidden>
-  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
-    <h3 id="modal-titulo">Excluir material?</h3>
-    <p id="modal-texto">Tem certeza que deseja excluir <strong id="modal-nome-item"></strong> do inventário? Esta ação não pode ser desfeita.</p>
-    <div class="modal-acoes">
-      <button id="modal-cancelar" class="btn-secundario">Cancelar</button>
-      <button id="modal-confirmar" class="btn-perigo">Excluir</button>
+              <div class="form-group">
+                <label for="input-quantidade">Quantidade em estoque</label>
+                <input
+                  type="number"
+                  id="input-quantidade"
+                  name="quantidade"
+                  placeholder="0"
+                  min="0"
+                  required
+                />
+              </div>
+
+              <button type="submit" id="btn-cadastrar">
+                <span class="btn-icon">+</span> Cadastrar material
+              </button>
+            </form>
+
+            <div id="feedback-msg" class="feedback" hidden></div>
+          </section>
+
+          <section class="panel list-panel">
+            <div class="panel-header">
+              <h2>Itens em estoque</h2>
+              <p class="panel-description">Estoque atualizado em tempo real.</p>
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Qtd.</th>
+                    <th>Status</th>
+                    <th class="th-acoes">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="lista-materiais">
+                  <!-- Preenchido dinamicamente via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="estado-vazio" class="estado-vazio" hidden>
+              <p>Nenhum material cadastrado ainda.</p>
+              <p class="estado-vazio-sub">
+                Use o formulário ao lado para começar.
+              </p>
+            </div>
+
+            <div id="estado-carregando" class="estado-carregando">
+              <div class="spinner"></div>
+              <p>Carregando inventário...</p>
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
-  </div>
-</div>
 
-<script src="script.js"></script>
-</body>
+    <div id="modal-confirmacao" class="modal-overlay" hidden>
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-titulo"
+      >
+        <h3 id="modal-titulo">Excluir material?</h3>
+        <p id="modal-texto">
+          Tem certeza que deseja excluir
+          <strong id="modal-nome-item"></strong> do inventário? Esta ação não
+          pode ser desfeita.
+        </p>
+        <div class="modal-acoes">
+          <button id="modal-cancelar" class="btn-secundario">Cancelar</button>
+          <button id="modal-confirmar" class="btn-perigo">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
 </html>

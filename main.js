@@ -4,7 +4,6 @@ const API_URL = "https://6a309701a7f8866418d628c5.mockapi.io/senac-almox/materia
 const LIMITE_CRITICO = 5;
 const LIMITE_BAIXO = 15;
 
-
 // ELEMENTOS DO DOM
 const form = document.getElementById("form-cadastro");
 const inputNome = document.getElementById("input-nome");
@@ -19,6 +18,13 @@ const totalItensEl = document.getElementById("total-itens");
 const totalAlertaEl = document.getElementById("total-alerta");
 const btnTema = document.getElementById("btn-tema");
 const temaLabel = btnTema ? btnTema.querySelector(".theme-toggle-label") : null;
+const modalConfirmacao = document.getElementById("modal-confirmacao");
+const modalNomeItem = document.getElementById("modal-nome-item");
+const modalCancelar = document.getElementById("modal-cancelar");
+const modalConfirmar = document.getElementById("modal-confirmar");
+
+// Guarda o id do material pendente de exclusão enquanto o modal está aberto
+let idPendenteExclusao = null;
 
 // FUNÇÕES AUXILIARES DE INTERFACE
 function mostrarFeedback(mensagem, tipo) {
@@ -52,6 +58,26 @@ function classificarStatus(quantidade) {
   return "ok";
 }
 
+// REGRA DE NEGÓCIO: VALIDAÇÃO DE RETIRADA
+function validarRetirada(estoqueAtual, quantidadeRetirada) {
+  const estoque = Number(estoqueAtual);
+  const retirada = Number(quantidadeRetirada);
+
+  if (!Number.isFinite(estoque) || !Number.isFinite(retirada)) {
+    return false;
+  }
+
+  if (retirada <= 0) {
+    return false;
+  }
+
+  if (retirada > estoque) {
+    return false;
+  }
+
+  return true;
+}
+
 // RENDERIZAÇÃO
 function renderizarMateriais(materiais) {
   listaMateriais.innerHTML = "";
@@ -70,6 +96,7 @@ function renderizarMateriais(materiais) {
 
     const linha = document.createElement("tr");
     linha.className = `linha-status status-${status}`;
+    linha.dataset.id = material.id;
 
     const celulaNome = document.createElement("td");
     celulaNome.className = "celula-nome";
@@ -92,9 +119,52 @@ function renderizarMateriais(materiais) {
     };
     celulaStatus.textContent = rotulos[status];
 
+    // Coluna de ações: input de retirada + botão baixar + botão excluir
+    const celulaAcoes = document.createElement("td");
+    celulaAcoes.className = "celula-acoes";
+
+    const inputWrapper = document.createElement("div");
+    inputWrapper.className = "input-retirada-wrapper";
+
+    const inputRetirada = document.createElement("input");
+    inputRetirada.type = "number";
+    inputRetirada.id = "input-retirada";
+    inputRetirada.className = "input-retirada";
+    inputRetirada.min = "1";
+    inputRetirada.max = String(quantidade);
+    inputRetirada.placeholder = "Qtd";
+    inputRetirada.setAttribute("aria-label", `Quantidade a retirar de ${material.nome}`);
+
+    inputWrapper.appendChild(inputRetirada);
+
+    const btnBaixar = document.createElement("button");
+    btnBaixar.type = "button";
+    btnBaixar.className = "btn-baixar";
+    btnBaixar.textContent = "Baixar";
+    btnBaixar.dataset.id = material.id;
+
+    btnBaixar.addEventListener("click", () => {
+      tratarBaixaMaterial(material, inputRetirada);
+    });
+
+    const btnExcluir = document.createElement("button");
+    btnExcluir.type = "button";
+    btnExcluir.className = "btn-excluir";
+    btnExcluir.textContent = "Excluir";
+    btnExcluir.dataset.id = material.id;
+
+    btnExcluir.addEventListener("click", () => {
+      abrirModalExclusao(material);
+    });
+
+    celulaAcoes.appendChild(inputWrapper);
+    celulaAcoes.appendChild(btnBaixar);
+    celulaAcoes.appendChild(btnExcluir);
+
     linha.appendChild(celulaNome);
     linha.appendChild(celulaQuantidade);
     linha.appendChild(celulaStatus);
+    linha.appendChild(celulaAcoes);
 
     listaMateriais.appendChild(linha);
   });
@@ -157,6 +227,129 @@ async function cadastrarMaterial(novoMaterial) {
 
   return await resposta.json();
 }
+
+// PUT - Atualiza a quantidade em estoque (usado na baixa de materiais)
+async function atualizarQuantidadeMaterial(id, novaQuantidade) {
+  const resposta = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ quantidade: novaQuantidade }),
+  });
+
+  if (!resposta.ok) {
+    throw new Error(`Erro HTTP: ${resposta.status}`);
+  }
+
+  return await resposta.json();
+}
+
+// DELETE - Remove um material do inventário
+async function excluirMaterial(id) {
+  const resposta = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!resposta.ok) {
+    throw new Error(`Erro HTTP: ${resposta.status}`);
+  }
+
+  return await resposta.json();
+}
+
+// BAIXA DE ESTOQUE (PUT)
+async function tratarBaixaMaterial(material, inputRetirada) {
+  const estoqueAtual = Number(material.quantidade) || 0;
+  const quantidadeRetirada = Number(inputRetirada.value);
+
+  if (!validarRetirada(estoqueAtual, quantidadeRetirada)) {
+    if (!inputRetirada.value || Number(inputRetirada.value) <= 0) {
+      mostrarFeedback("Informe uma quantidade válida para retirar.", "erro");
+    } else {
+      mostrarFeedback(
+        `Não é possível retirar ${inputRetirada.value}. Estoque disponível: ${estoqueAtual}.`,
+        "erro"
+      );
+    }
+    inputRetirada.focus();
+    return;
+  }
+
+  const linha = listaMateriais.querySelector(`tr[data-id="${material.id}"]`);
+  const botoesDaLinha = linha ? linha.querySelectorAll("button") : [];
+  botoesDaLinha.forEach((botao) => (botao.disabled = true));
+
+  try {
+    const novaQuantidade = estoqueAtual - quantidadeRetirada;
+    await atualizarQuantidadeMaterial(material.id, novaQuantidade);
+    mostrarFeedback(
+      `Baixa de ${quantidadeRetirada} em "${material.nome}" registrada com sucesso.`,
+      "sucesso"
+    );
+    await carregarMateriais();
+  } catch (erro) {
+    console.error("Erro ao registrar baixa:", erro);
+    mostrarFeedback(
+      "Não foi possível registrar a baixa. Tente novamente.",
+      "erro"
+    );
+    botoesDaLinha.forEach((botao) => (botao.disabled = false));
+  }
+}
+
+// EXCLUSÃO DE MATERIAL (DELETE) — com modal de confirmação
+function abrirModalExclusao(material) {
+  idPendenteExclusao = material.id;
+  modalNomeItem.textContent = material.nome ?? "este item";
+  modalConfirmacao.hidden = false;
+  modalConfirmar.focus();
+}
+
+function fecharModalExclusao() {
+  idPendenteExclusao = null;
+  modalConfirmacao.hidden = true;
+}
+
+async function confirmarExclusao() {
+  if (!idPendenteExclusao) {
+    fecharModalExclusao();
+    return;
+  }
+
+  const idParaExcluir = idPendenteExclusao;
+  modalConfirmar.disabled = true;
+  modalConfirmar.textContent = "Excluindo...";
+
+  try {
+    await excluirMaterial(idParaExcluir);
+    mostrarFeedback("Material excluído do inventário.", "sucesso");
+    fecharModalExclusao();
+    await carregarMateriais();
+  } catch (erro) {
+    console.error("Erro ao excluir material:", erro);
+    mostrarFeedback(
+      "Não foi possível excluir o material. Tente novamente.",
+      "erro"
+    );
+  } finally {
+    modalConfirmar.disabled = false;
+    modalConfirmar.textContent = "Excluir";
+  }
+}
+
+modalCancelar.addEventListener("click", fecharModalExclusao);
+modalConfirmar.addEventListener("click", confirmarExclusao);
+modalConfirmacao.addEventListener("click", (evento) => {
+  if (evento.target === modalConfirmacao) {
+    fecharModalExclusao();
+  }
+});
+document.addEventListener("keydown", (evento) => {
+  if (evento.key === "Escape" && !modalConfirmacao.hidden) {
+    fecharModalExclusao();
+  }
+});
 
 // TEMA (claro / escuro)
 function aplicarTema(tema) {
@@ -232,7 +425,7 @@ btnAtualizar.addEventListener("click", () => {
 });
 
 // INICIALIZAÇÃO
-    document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   aplicarTema("light");
   carregarMateriais();
 });
