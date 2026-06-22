@@ -42,7 +42,7 @@
             <span class="theme-toggle-label">Modo escuro</span>
           </button>
           <div class="sidebar-meta">
-            <span class="footer-eyebrow">Sprint 01</span>
+            <span class="footer-eyebrow">SENAC - Almoxarifado</span>
             <span class="footer-label">EFRAGADEV.</span>
           </div>
         </div>
@@ -101,6 +101,21 @@
                 />
               </div>
 
+              <div class="form-group">
+                <label for="input-unidade">Unidade</label>
+                <select id="input-unidade" name="unidade" required>
+                  <option value="">Selecione...</option>
+                  <option value="Unidade">Unidade</option>
+                  <option value="Caixa (com 100)">Caixa (com 100)</option>
+                  <option value="Caixa (com 50)">Caixa (com 50)</option>
+                  <option value="Pacote (com 10)">Pacote (com 10)</option>
+                  <option value="Pacote">Pacote</option>
+                  <option value="Rolo">Rolo</option>
+                  <option value="Litro">Litro</option>
+                  <option value="Frasco">Frasco</option>
+                </select>
+              </div>
+
               <button type="submit" id="btn-cadastrar">
                 <span class="btn-icon">+</span> Cadastrar material
               </button>
@@ -131,13 +146,14 @@
                   <tr>
                     <th>Material</th>
                     <th>Qtd.</th>
+                    <th>Unidade</th>
                     <th>Status</th>
                     <th class="th-acoes">Ações</th>
                   </tr>
                 </thead>
                 <tbody id="lista-materiais">
                   <tr class="linha-modelo-retirada" hidden>
-                    <td colspan="4">
+                    <td colspan="5">
                       <input
                         type="number"
                         id="input-retirada"

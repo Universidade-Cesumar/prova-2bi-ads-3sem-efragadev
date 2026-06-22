@@ -8,6 +8,7 @@ const LIMITE_BAIXO = 15;
 const form = document.getElementById("form-cadastro");
 const inputNome = document.getElementById("input-nome");
 const inputQuantidade = document.getElementById("input-quantidade");
+const inputUnidade = document.getElementById("input-unidade");
 const btnCadastrar = document.getElementById("btn-cadastrar");
 const listaMateriais = document.getElementById("lista-materiais");
 const feedbackMsg = document.getElementById("feedback-msg");
@@ -92,6 +93,18 @@ function validarRetirada(estoqueAtual, quantidadeRetirada) {
   return true;
 }
 
+function validarCadastro(nome, quantidade, unidade) {
+  const quantidadeNumero = Number(quantidade);
+
+  return (
+    nome.trim() !== "" &&
+    quantidade !== "" &&
+    Number.isFinite(quantidadeNumero) &&
+    quantidadeNumero >= 0 &&
+    unidade.trim() !== ""
+  );
+}
+
 // RENDERIZAÇÃO
 function renderizarMateriais(materiais) {
   listaMateriais.innerHTML = "";
@@ -123,6 +136,10 @@ function renderizarMateriais(materiais) {
     badge.className = `qtd-badge badge-${status}`;
     badge.textContent = quantidade;
     celulaQuantidade.appendChild(badge);
+
+    const celulaUnidade = document.createElement("td");
+    celulaUnidade.className = "celula-unidade";
+    celulaUnidade.textContent = material.unidade ?? "--";
 
     const celulaStatus = document.createElement("td");
     celulaStatus.className = "celula-status-texto";
@@ -178,6 +195,7 @@ function renderizarMateriais(materiais) {
 
     linha.appendChild(celulaNome);
     linha.appendChild(celulaQuantidade);
+    linha.appendChild(celulaUnidade);
     linha.appendChild(celulaStatus);
     linha.appendChild(celulaAcoes);
 
@@ -399,6 +417,25 @@ form.addEventListener("submit", async (evento) => {
 
   const nome = inputNome.value.trim();
   const quantidade = inputQuantidade.value;
+  const unidade = inputUnidade.value;
+
+  if (!validarCadastro(nome, quantidade, unidade)) {
+    mostrarFeedback(
+      "Preencha nome, quantidade e unidade antes de cadastrar.",
+      "erro"
+    );
+
+    if (!nome) {
+      inputNome.focus();
+    } else if (quantidade === "" || Number(quantidade) < 0) {
+      inputQuantidade.focus();
+    } else {
+      inputUnidade.focus();
+    }
+
+    alert("Preencha nome, quantidade e unidade antes de cadastrar.");
+    return;
+  }
 
   if (!nome) {
     mostrarFeedback("Informe o nome do material.", "erro");
@@ -415,6 +452,7 @@ form.addEventListener("submit", async (evento) => {
   const novoMaterial = {
     nome: nome,
     quantidade: Number(quantidade),
+    unidade: unidade,
   };
 
   alternarBotaoCadastrar(true);

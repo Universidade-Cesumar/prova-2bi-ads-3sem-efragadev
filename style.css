@@ -483,7 +483,8 @@ body {
     color: var(--text-secondary);
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     padding: 11px 14px;
     border-radius: var(--radius);
     border: 1px solid var(--border);
@@ -498,11 +499,16 @@ body {
     color: var(--text-muted);
 }
 
-.form-group input:focus{
+.form-group input:focus,
+.form-group select:focus{
     outline: none;
     border-color: var(--accent);
     background: var(--bg-elevated);
     box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.form-group select {
+    cursor: pointer;
 }
 
 #btn-cadastrar{
@@ -578,7 +584,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.86rem;
-    min-width: 560px;
+    min-width: 680px;
 }
 
 thead{
@@ -621,11 +627,18 @@ tbody tr:hover{
 }
 
 .linha-status.status-baixo {
-    border-left-color: var(--warning);
+    background: var(--danger-soft);
+    border-left-color: var(--danger);
 }
 
 .linha-status.status-critico {
+    background: var(--danger-soft);
     border-left-color: var(--danger);
+}
+
+.linha-status.status-baixo:hover,
+.linha-status.status-critico:hover {
+    background: rgba(225, 29, 72, 0.13);
 }
 
 .celula-nome {
@@ -635,6 +648,11 @@ tbody tr:hover{
 
 .celula-quantidade {
     font-family: var(--font-mono);
+}
+
+.celula-unidade {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
 }
 
 .qtd-badge{
@@ -652,8 +670,8 @@ tbody tr:hover{
 }
 
 .badge-baixo {
-    background: var(--warning-soft);
-    color: var(--warning);
+    background: rgba(225, 29, 72, 0.14);
+    color: var(--danger);
 }
 
 .badge-critico{
