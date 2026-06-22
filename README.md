@@ -1,4 +1,4 @@
-# ⚕️ Almoxarifado de Saúde — SENAC Zona Norte
+# 💊 StockClin — SENAC Zona Norte
 
 > Sistema web de controle de materiais para o curso Técnico de Enfermagem.
 
