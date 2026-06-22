@@ -57,18 +57,10 @@ Responsável por armazenar o cadastro dos itens do almoxarifado:
 | `id` | String | Identificador único (gerado automaticamente) |
 | `nome` | String | Nome do produto |
 | `quantidade` | Number | Quantidade em estoque |
+| `unidade` | String | Unidade de medida (ex: Unidade, Caixa, Pacote, Frasco) |
 
-**`/movimentacoes`** *(planejado para Sprint 3)*
-Responsável por registrar as baixas diárias:
-
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `id` | String | Identificador único (gerado automaticamente) |
-| `dataSaida` | String | Data da retirada |
-| `quantidadeRetirada` | Number | Quantidade retirada |
-| `responsavel` | String | Nome do professor/responsável |
-| `setor` | String | Destino/setor |
-| `motivo` | String | Motivo da retirada |
+**`/movimentacoes`** *(não implementado neste projeto)*
+Recurso planejado para registrar o histórico detalhado de baixas, incluindo responsável, setor e motivo da retirada.
 
 ---
 
@@ -107,32 +99,64 @@ Essa função foi testada isoladamente com múltiplos cenários (retirada normal
 3. Ao confirmar, o sistema envia um `DELETE` ao MockAPI removendo o registro.
 4. A lista e os indicadores (KPIs) são atualizados automaticamente.
 
+### Melhorias adicionadas na versão final
+
+Além das funcionalidades do contrato técnico, a versão final da Sprint 2 incluiu:
+
+- **Campo de unidade de medida** no formulário de cadastro (`select` com opções como Unidade, Caixa, Pacote, Frasco etc.), exibido como coluna adicional na tabela de inventário.
+- **Função `validarCadastro(nome, quantidade, unidade)`** que verifica se todos os campos obrigatórios estão preenchidos antes de enviar o POST à API.
+- **Destaques visuais de alerta** nas linhas de estoque baixo e crítico: fundo e borda vermelhos, tornando imediata a identificação dos itens que precisam de reposição.
+
+---
+
+## 🔍 Sprint 3 — Busca e Publicação
+
+A Sprint 3 finalizou o projeto com a implementação de **busca em tempo real** no inventário e a **publicação do sistema na web** via GitHub Pages.
+
+### Funcionalidades adicionadas
+
+- **Busca de materiais:** campo `#input-busca` acima da tabela permite filtrar os itens pelo nome em tempo real, sem recarregar dados da API. A filtragem é feita localmente sobre o array `materiaisCarregados`, mantendo o desempenho mesmo com grandes volumes de dados.
+- **Publicação online:** o sistema foi hospedado via GitHub Pages, tornando-o acessível pelo navegador sem necessidade de servidor local.
+
+### Como funciona a busca
+
+O array `materiaisCarregados` é preenchido uma vez ao carregar a página (GET na API). A cada keystroke no campo de busca, a função `filtrarMateriaisPorBusca()` filtra esse array localmente — sem fazer novas chamadas à API — e repassa o resultado para `renderizarMateriais()`, atualizando a tabela instantaneamente.
+
+```javascript
+function filtrarMateriaisPorBusca(materiais) {
+  const termo = inputBusca.value.trim().toLowerCase();
+  if (!termo) return materiais;
+  return materiais.filter((material) =>
+    String(material.nome ?? "").toLowerCase().includes(termo)
+  );
+}
+```
+
+Isso garante que a busca seja rápida e não sobrecarregue a API com requisições desnecessárias.
+
+### Publicação via GitHub Pages
+
+O projeto foi publicado diretamente pelo repositório do GitHub, sem necessidade de servidor back-end ou build. Como é uma aplicação estática (HTML + CSS + JS), o GitHub Pages serve os arquivos diretamente ao navegador.
+
+**Passos para publicar:**
+1. Acesse o repositório no GitHub
+2. Vá em **Settings → Pages**
+3. Em *Source*, selecione o branch `master` (ou `main`) e a pasta raiz `/`
+4. Clique em **Save** — o GitHub gera automaticamente uma URL pública
+
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```
 almoxarifado-saude/
-├── index.html          # Página principal
-├── css/
-│   └── style.css       # Estilos + suporte a light/dark mode
-├── js/
-│   └── script.js       # Lógica da aplicação e integração com API
-└── README.md           # Documentação do projeto
+├── index.html      # Página principal
+├── main.js         # Lógica da aplicação e integração com a API
+├── style.css       # Estilos + suporte a light/dark mode
+├── img/
+│   └── diamante.png  # Favicon do sistema
+└── README.md       # Documentação do projeto
 ```
-
----
-
-## ⚙️ Como Executar
-
-1. Clone ou baixe este repositório
-2. Acesse [mockapi.io](https://mockapi.io) e crie um projeto com o recurso `materiais`
-3. Copie a URL gerada pelo MockAPI (ex: `https://SEU_ID.mockapi.io/api/v1/materiais`)
-4. Abra o arquivo `js/script.js` e substitua na linha 6:
-   ```javascript
-   const API_URL = "https://SEU_ID.mockapi.io/api/v1/materiais";
-   ```
-5. Abra o `index.html` com o **Live Server** do VS Code
 
 ---
 
@@ -142,13 +166,6 @@ almoxarifado-saude/
 |---|---|---|
 | Sprint 1 | Fundação, API e Inventário | ✅ Concluída |
 | Sprint 2 | Regras de Negócio e Saídas | ✅ Concluída |
-| Sprint 3 | Relatórios e Finalização | 🔄 Em breve |
+| Sprint 3 | Busca e Publicação | ✅ Concluída |
 
 ---
-
-## 👩‍⚕️ Contexto
-
-**Responsável pelo almoxarifado:** Camila (Enfermeira)  
-**Instituição:** SENAC Zona Norte  
-**Curso:** Técnico de Enfermagem  
-**Disciplina:** Desenvolvimento Web  
