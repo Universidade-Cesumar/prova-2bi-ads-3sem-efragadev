@@ -16,6 +16,7 @@ const estadoVazio = document.getElementById("estado-vazio");
 const estadoCarregando = document.getElementById("estado-carregando");
 const totalItensEl = document.getElementById("total-itens");
 const totalAlertaEl = document.getElementById("total-alerta");
+const inputBusca = document.getElementById("input-busca");
 const btnTema = document.getElementById("btn-tema");
 const temaLabel = btnTema ? btnTema.querySelector(".theme-toggle-label") : null;
 const modalConfirmacao = document.getElementById("modal-confirmacao");
@@ -25,6 +26,7 @@ const modalConfirmar = document.getElementById("modal-confirmar");
 
 // Guarda o id do material pendente de exclusão enquanto o modal está aberto
 let idPendenteExclusao = null;
+let materiaisCarregados = [];
 
 // FUNÇÕES AUXILIARES DE INTERFACE
 function mostrarFeedback(mensagem, tipo) {
@@ -56,6 +58,18 @@ function classificarStatus(quantidade) {
   if (quantidade <= LIMITE_CRITICO) return "critico";
   if (quantidade <= LIMITE_BAIXO) return "baixo";
   return "ok";
+}
+
+function filtrarMateriaisPorBusca(materiais) {
+  const termo = inputBusca ? inputBusca.value.trim().toLowerCase() : "";
+
+  if (!termo) {
+    return materiais;
+  }
+
+  return materiais.filter((material) =>
+    String(material.nome ?? "").toLowerCase().includes(termo)
+  );
 }
 
 // REGRA DE NEGÓCIO: VALIDAÇÃO DE RETIRADA
@@ -90,7 +104,7 @@ function renderizarMateriais(materiais) {
 
   alternarEstadoVazio(false);
 
-  materiais.forEach((material) => {
+  materiais.forEach((material, indice) => {
     const quantidade = Number(material.quantidade) || 0;
     const status = classificarStatus(quantidade);
 
@@ -128,7 +142,8 @@ function renderizarMateriais(materiais) {
 
     const inputRetirada = document.createElement("input");
     inputRetirada.type = "number";
-    inputRetirada.id = "input-retirada";
+    inputRetirada.id =
+      indice === 0 ? "input-retirada" : `input-retirada-${material.id}`;
     inputRetirada.className = "input-retirada";
     inputRetirada.min = "1";
     inputRetirada.max = String(quantidade);
@@ -199,7 +214,8 @@ async function carregarMateriais() {
     }
 
     const materiais = await resposta.json();
-    renderizarMateriais(materiais);
+    materiaisCarregados = materiais;
+    renderizarMateriais(filtrarMateriaisPorBusca(materiaisCarregados));
   } catch (erro) {
     console.error("Erro ao carregar materiais:", erro);
     mostrarFeedback(
@@ -423,6 +439,12 @@ form.addEventListener("submit", async (evento) => {
 btnAtualizar.addEventListener("click", () => {
   carregarMateriais();
 });
+
+if (inputBusca) {
+  inputBusca.addEventListener("input", () => {
+    renderizarMateriais(filtrarMateriaisPorBusca(materiaisCarregados));
+  });
+}
 
 // INICIALIZAÇÃO
 document.addEventListener("DOMContentLoaded", () => {

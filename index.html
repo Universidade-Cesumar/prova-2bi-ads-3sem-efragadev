@@ -115,6 +115,16 @@
               <p class="panel-description">Estoque atualizado em tempo real.</p>
             </div>
 
+            <div class="search-bar">
+              <label for="input-busca">Buscar material</label>
+              <input
+                type="search"
+                id="input-busca"
+                placeholder="Digite o nome do material"
+                autocomplete="off"
+              />
+            </div>
+
             <div class="table-wrapper">
               <table>
                 <thead>
@@ -126,6 +136,17 @@
                   </tr>
                 </thead>
                 <tbody id="lista-materiais">
+                  <tr class="linha-modelo-retirada" hidden>
+                    <td colspan="4">
+                      <input
+                        type="number"
+                        id="input-retirada"
+                        class="input-retirada"
+                        min="1"
+                        placeholder="Qtd"
+                      />
+                    </td>
+                  </tr>
                   <!-- Preenchido dinamicamente via JS -->
                 </tbody>
               </table>
